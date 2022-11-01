@@ -28,8 +28,8 @@ echo.
 
 cd /d %~dp0
 
-cd projects\ispp\help
-if errorlevel 1 goto failed
+::cd projects\ispp\help
+::if errorlevel 1 goto failed
 call .\compile.bat
 if errorlevel 1 goto failed
 cd ..\..\..

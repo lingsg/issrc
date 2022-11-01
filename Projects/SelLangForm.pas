@@ -33,6 +33,8 @@ type
 
 function AskForLanguage: Boolean;
 
+procedure ActivePreviousLanguage;
+
 implementation
 
 uses
@@ -113,7 +115,10 @@ begin
     if (shUsePreviousLanguage in SetupHeader.Options) and
        (LangForm.LangCombo.Items.Count > 1) then begin
       { do not localize or change the following string }
-      PrevLang := GetPreviousData(ExpandConst(SetupHeader.AppId), 'Inno Setup: Language', '');
+      if (CodeRunner.FunctionExists('GetPreviousLanguage')) then
+        PrevLang := CodeRunner.RunStringFunction('GetPreviousLanguage', [''], False, '');
+      if (PrevLang = '') then
+        PrevLang := GetPreviousData(ExpandConst(SetupHeader.AppId), 'Inno Setup: Language', '');
 
       if PrevLang <> '' then begin
         for I := 0 to Entries[seLanguage].Count-1 do begin
@@ -147,6 +152,28 @@ begin
     LangForm.Free;
   end;
 end;
+
+procedure ActivePreviousLanguage;
+var
+  I: Integer;
+  PrevLang: String;  
+begin
+  if (shUsePreviousLanguage in SetupHeader.Options) then begin
+    PrevLang := CodeRunner.RunStringFunction('GetPreviousLanguage', [''], False, '');
+    if (PrevLang = '') then
+      PrevLang := GetPreviousData(ExpandConst(SetupHeader.AppId), 'Inno Setup: Language', '');
+
+    if PrevLang <> '' then begin
+      for I := 0 to Entries[seLanguage].Count-1 do begin
+        if CompareText(PrevLang, PSetupLanguageEntry(Entries[seLanguage][I]).Name) = 0 then begin
+          SetActiveLanguage(I);
+          Break;
+        end;
+      end;
+    end;
+  end;
+end;
+
 
 { TSelectLanguageForm }
 

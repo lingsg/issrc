@@ -3084,15 +3084,6 @@ begin
   else
     Initialize64BitInstallMode(False);
 
-  { Show "Select Language" dialog if necessary - requires "64-bit mode" to be
-    initialized else it might query the previous language from the wrong registry
-    view }
-  if ShowLanguageDialog and (Entries[seLanguage].Count > 1) and
-     not InitSilent and not InitVerySilent then begin
-    if not AskForLanguage then
-      Abort;
-  end;
-
   { Check processor architecture }
   if (SetupHeader.ArchitecturesAllowed <> []) and
      not(ProcessorArchitecture in SetupHeader.ArchitecturesAllowed) then
@@ -3170,6 +3161,29 @@ begin
       FreeAndNil(CodeRunner);
       raise;
     end;
+  end
+  else
+    NeedPassword := HandleInitPassword(NeedPassword);
+
+  // Init CodeRunner before AskLanguage
+  { Show "Select Language" dialog if necessary - requires "64-bit mode" to be
+    initialized else it might query the previous language from the wrong registry
+    view }
+
+  if (Entries[seLanguage].Count > 1) then begin
+    if ShowLanguageDialog and not InitSilent and not InitVerySilent then begin
+      if not AskForLanguage then
+        Abort;
+    end
+    else
+    begin
+      // Silient mode use Previous language
+      ActivePreviousLanguage;
+    end;
+  end;
+
+  { Load and initialize code }
+  if SetupHeader.CompiledCodeText <> '' then begin
     try
       Res := CodeRunner.RunBooleanFunction('InitializeSetup', [''], False, True);
     except
