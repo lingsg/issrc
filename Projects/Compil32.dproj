@@ -126,7 +126,7 @@
 						<VersionInfoKeys Name="FileDescription">Inno Setup Compiler</VersionInfoKeys>
 						<VersionInfoKeys Name="FileVersion">0.0.0.0</VersionInfoKeys>
 						<VersionInfoKeys Name="InternalName"/>
-						<VersionInfoKeys Name="LegalCopyright">Copyright (C) 1997-2008 Jordan Russell. Portions Copyright (C) 2000-2008 Martijn Laan.</VersionInfoKeys>
+						<VersionInfoKeys Name="LegalCopyright">Copyright (C) 1997-2018 Jordan Russell. Portions Copyright (C) 2000-2018 Martijn Laan.</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalTrademarks"/>
 						<VersionInfoKeys Name="OriginalFilename"/>
 						<VersionInfoKeys Name="ProductName">Inno Setup</VersionInfoKeys>

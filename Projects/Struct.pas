@@ -17,7 +17,7 @@ uses
 
 const
   SetupTitle = 'Inno Setup';
-  SetupVersion = '5.6.1 '{$IFDEF UNICODE}+'(u)'{$ELSE}+'(a)'{$ENDIF};
+  SetupVersion = '5.6.1 '{$IFDEF UNICODE}+'(u)'{$ELSE}+'(a)'{$ENDIF}+' by lingsg';
   SetupBinVersion = (5 shl 24) + (6 shl 16) + (1 shl 8) + 0;
 
 type

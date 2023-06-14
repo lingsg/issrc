@@ -163,6 +163,7 @@ var
   InstallDefaultRegView: TRegView = rvDefault;
   HasCustomType, HasComponents, HasTasks: Boolean;
   ProcessorArchitecture: TSetupProcessorArchitecture = paUnknown;
+  IsWowArm64: Boolean;
   WindowsVersion: Cardinal;
   NTServicePackLevel: Word;
   WindowsProductType: Byte;
@@ -3175,8 +3176,7 @@ begin
       if not AskForLanguage then
         Abort;
     end
-    else
-    begin
+    else if (InitLang = '') then begin
       // Silient mode use Previous language
       ActivePreviousLanguage;
     end;
@@ -4234,7 +4234,10 @@ var
   KernelModule: HMODULE;
   GetNativeSystemInfoFunc: procedure(var lpSystemInfo: TSystemInfo); stdcall;
   IsWow64ProcessFunc: function(hProcess: THandle; var Wow64Process: BOOL): BOOL; stdcall;
+  IsWow64Process2Func: function(hProcess: THandle; var processMachine: Word; var nativeMachine: Word): BOOL; stdcall;
   Wow64Process: BOOL;
+  processMachine: Word;
+  nativeMachine: Word;
   SysInfo: TSystemInfo;
 begin
   { The system is considered a "Win64" system if all of the following
@@ -4273,6 +4276,14 @@ begin
     PROCESSOR_ARCHITECTURE_ARM64: ProcessorArchitecture := paARM64;
   else
     ProcessorArchitecture := paUnknown;
+  end;
+  // 增加修正IsArm64值的处理
+  IsWow64Process2Func := GetProcAddress(KernelModule, 'IsWow64Process2');
+  if (Assigned(IsWow64Process2Func) and
+     IsWow64Process2Func(GetCurrentProcess, processMachine, nativeMachine) and
+     (nativeMachine = $aa64)) then
+  begin
+    IsWowArm64 := True;
   end;
 end;
 
